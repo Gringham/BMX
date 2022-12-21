@@ -6,6 +6,8 @@ from project_root import ROOT_DIR
 # Scripts to load wmt datasets into pandas corpora. Here, only used for wmt17. Requires a file with DA scores on
 # self.relative_corpus_location, self.corpus_name, 'DA-seglevel.csv'
 
+# requires WMT system outputs and the file DA-seglevel.csv with DA scores
+
 class WMTLoader:
     def __init__(self, lp_list=None, corpus_name='WMT17', load_from_file=None, outputFile="/wmt17.tsv",
                  relative_corpus_location="./"):
