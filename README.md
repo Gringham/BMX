@@ -6,19 +6,12 @@ If you use it, please cite:
 ```
 @misc{https://doi.org/10.48550/arxiv.2212.10469,
   doi = {10.48550/ARXIV.2212.10469},
-  
   url = {https://arxiv.org/abs/2212.10469},
-  
   author = {Leiter, Christoph and Nguyen, Hoa and Eger, Steffen},
-  
   keywords = {Computation and Language (cs.CL), FOS: Computer and information sciences, FOS: Computer and information sciences},
-  
   title = {BMX: Boosting Machine Translation Metrics with Explainability},
-  
   publisher = {arXiv},
-  
   year = {2022},
-  
   copyright = {Creative Commons Attribution 4.0 International}
 }
 
@@ -43,4 +36,4 @@ outputs - folder for outputs
 
 The releases contain files with all our generated explanations. To run further evaluations, these shoud be put in the outputs folder.   
 
-
+Generally our code is structured in a way that allows to specify experiment conditions to loop over.
