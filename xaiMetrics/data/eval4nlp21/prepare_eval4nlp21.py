@@ -3,8 +3,8 @@ import os
 import csv
 from project_root import ROOT_DIR
 
-# A reader for the test data of the dev sets of the Eval4NLP shared task.
 # Data can be downloaded from here: https://github.com/eval4nlp/SharedTask2021
+# The reader is specifically for the testdata
 
 # Dataset from:
 # Fomicheva, M., Lertvittayakumjorn, P., Zhao, W., Eger, S., & Gao, Y. (2021).
