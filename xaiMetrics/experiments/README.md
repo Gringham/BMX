@@ -16,3 +16,5 @@ The `compute_results_<>.py` scripts will create the plots displayed in our paper
 parameters our grid search is iterating over. 
 
 The `test_custom_<>.py` scripts evaluate the scores with BMX compared to other fine-tuning options.
+
+For further details, you can view the comments in the files. 
