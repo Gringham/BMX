@@ -198,4 +198,11 @@ xaiMetrics/data/wmt22_test_sets/*
 !xaiMetrics/data/wmt22_test_sets/prepare_wmt22.py
 xaiMetrics/data/MQM/*
 !xaiMetrics/data/MQM/prepare_mqm.py
+xaiMetrics/data/wmt22_extra
+!xaiMetrics/data/cnndm/prepare_data.py
+!xaiMetrics/data/cnndm/SummEval.json
+xaiMetrics/data/cnndm
+xaiMetrics/metrics/wrappers/models
+!xaiMetrics/data/REALSumm/prepareRealSumm.py
+xaiMetrics/data/REALSumm
 

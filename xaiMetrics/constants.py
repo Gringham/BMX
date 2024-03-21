@@ -1,2 +1,0 @@
-REFERENCE_FREE="ref-free"
-REFERENCE_BASED="ref-based"

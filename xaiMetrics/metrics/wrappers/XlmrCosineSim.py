@@ -27,7 +27,7 @@ class XlmrCosineSim(MetricClass, pl.LightningModule):
     name = 'XLMRCosineSimSentenseTransformers'
 
 
-    def __init__(self, bs=16):
+    def __init__(self, bs=16, mode=REFERENCE_FREE):
         super().__init__()
         # following the setup from here: https://huggingface.co/sentence-transformers/stsb-xlm-r-multilingual
         self.tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/stsb-xlm-r-multilingual',
@@ -39,7 +39,7 @@ class XlmrCosineSim(MetricClass, pl.LightningModule):
         self.cos = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
         self.bs = bs
         self.version = "custom"
-        self.mode = REFERENCE_FREE
+        self.mode = mode
 
     def __call__(self, src, hyp):
         '''
@@ -48,6 +48,8 @@ class XlmrCosineSim(MetricClass, pl.LightningModule):
         :return: A list of Labse Scores
         '''
         self.eval()
+        if type(src[0]) == list:
+            src = [s[0] for s in src]
 
         src_ids = self.tokenize(src)
         hyp_ids = self.tokenize(hyp)
@@ -102,4 +104,3 @@ if __name__ == '__main__':
     print(c(["Ein Test Satz"], ["A test sentence"]))
 
 
-    metric([" ".join(p) for p in pred], gold)

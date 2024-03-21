@@ -6,6 +6,7 @@ import numpy as np
 from xaiMetrics.constants import REFERENCE_FREE
 from xaiMetrics.explainer.wrappers.AgnosticExplainer import AgnosticExplainer
 from xaiMetrics.explanations.FeatureImportanceExplanation import FeatureImportanceExplanation
+from xaiMetrics.metrics.wrappers.AnyMetric import AnyMetric
 from xaiMetrics.metrics.wrappers.BertScore import BertScore
 
 
@@ -29,6 +30,7 @@ class InputMarginalizationExplainer(AgnosticExplainer):
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
         self.vocab = list(self.tokenizer.ids_to_tokens.values())
         self.model = BertForMaskedLM.from_pretrained('bert-base-multilingual-cased')
+
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         self.delta = delta
@@ -52,19 +54,13 @@ class InputMarginalizationExplainer(AgnosticExplainer):
             print("Cutting hypothesis sentence after 80 tokens to handle it performancewise")
         hyp_probab = self.get_probabilities(hyp_tokens, self.delta)
         hyp_sents, hyp_indices = self.permute_sents(hyp_tokens, hyp_probab, hyp)
-        print("hyp-perm", time.time()-s)
-        s = time.time()
 
         gt_tokens = self.collapse_list(self.tokenizer.tokenize(gt))
         gt_probab = self.get_probabilities(gt_tokens, self.delta)
         gt_sents, gt_indices = self.permute_sents(gt_tokens, gt_probab, gt)
-        print("gt-perm", time.time() - s)
-        s = time.time()
 
         # get the original score and permuted scores
         real, gt_scores, hyp_scores = self.get_scores(gt_sents, hyp_sents, gt_indices, hyp_indices, gt_probab, hyp_probab, metric)
-        print("scores", time.time() - s)
-        s = time.time()
 
         # flatten the list and normalize the probabilities using softmax
         hyp_probs = [[hyp_probab[y][x][0] for x in range(len(hyp_probab[y]))] for y in range(len(hyp_probab))]
@@ -72,8 +68,6 @@ class InputMarginalizationExplainer(AgnosticExplainer):
 
         gt_probs = [[gt_probab[y][x][0] for x in range(len(gt_probab[y]))] for y in range(len(gt_probab))]
         gt_probs = [np.exp(p) / sum(np.exp(p)) for p in gt_probs]
-        print("probs", time.time() - s)
-        s = time.time()
 
         # weight the scores by their probabilities
         hyp_weighted_scores = [[hyp_probs[y][x] * hyp_scores[y][x] for x in range(len(hyp_probs[y]))] for y in range(len(hyp_probs))]
@@ -81,13 +75,10 @@ class InputMarginalizationExplainer(AgnosticExplainer):
 
         gt_weighted_scores = [[gt_probs[y][x] * gt_scores[y][x] for x in range(len(gt_probs[y]))] for y in range(len(gt_probs))]
         gt_probable_scores = [sum(w) for w in gt_weighted_scores]
-        print("weight", time.time() - s)
-        s = time.time()
 
         # get probabilities as the difference between the original and the replacements
         hyp_attributions = [(z[0], z[1]) for z in list(zip([real - p for p in hyp_probable_scores], hyp_tokens))]
         gt_attributions = [(z[0], z[1]) for z in list(zip([real - p for p in gt_probable_scores], gt_tokens))]
-        print("diff", time.time() - s)
 
         return FeatureImportanceExplanation(real, gt, hyp, gt_attributions, hyp_attributions, mode=metric.mode)
 
@@ -154,8 +145,6 @@ class InputMarginalizationExplainer(AgnosticExplainer):
         tokens = [[tokens[x] if x != y else '[MASK]' for x in range(len(tokens))] for y in range(len(tokens))]
         tokens = [self.tokenizer.tokenize(' '.join(['[CLS]'] + t + ['[SEP]'])) for t in tokens]
 
-        print("1", time.time() - s)
-        s = time.time()
         # Generates segment ids based on the token lengths an determines max len for padding
         max_len = max(len(t) for t in tokens)
         seg_ids = [[0] * len(i) for i in tokens]
@@ -166,8 +155,6 @@ class InputMarginalizationExplainer(AgnosticExplainer):
                 tokens[x].append('[PAD]')
                 seg_ids[x].append(1)
 
-        print("2", time.time() - s)
-        s = time.time()
         # Getting the index after re-tokenization
         mask_indices = [t.index('[MASK]') for t in tokens]
 
@@ -177,21 +164,15 @@ class InputMarginalizationExplainer(AgnosticExplainer):
         # Move ids to tensor
         id_tensor = torch.tensor(ids, device=self.device)
         seg_id_tensor = torch.tensor(seg_ids, device=self.device)
-        print("3", time.time() - s)
-        s = time.time()
 
         # Get Predictions
         self.model.eval()
         with torch.no_grad():
             predictions = self.model(id_tensor, seg_id_tensor)
 
-        print("4", time.time() - s)
-        s = time.time()
         # Get the predictions for the masked token
         bert_scores = [predictions[0][x, mask_indices[x]].tolist() for x in range(predictions[0].shape[0])]
 
-        print("5", time.time() - s)
-        s = time.time()
         # Use softmax to obtain probabilities
         bert_scores_soft = [np.exp(b) / sum(np.exp(b)) for b in bert_scores]
 
@@ -200,7 +181,6 @@ class InputMarginalizationExplainer(AgnosticExplainer):
         scoring = [[w for w in s if w[0] > delta] for s in scoring]
 
         [s.sort(key=lambda x: x[0], reverse=True) for s in scoring]
-        print("6", time.time() - s)
 
         return scoring
 
@@ -223,3 +203,8 @@ if __name__ == '__main__':
     IM = InputMarginalizationExplainer(delta=0.05)
     t = BertScore(mode=REFERENCE_FREE)
     print(IM.explain_sentence('Hallo Sie da, was machen Sie denn da, Sie sollten das nicht tun Affe', "Hey you there, what are you doing, you shouldn't do that.", t))
+    print(IM.explain_sentence('Hallo du da, was machst du denn da?',
+                              "Hey there, my goood friend, what are you doing there?", t))
+
+    print(IM.explain_sentence('Hallo du da, was machst du denn da, ergioijowierjgo?',
+                              "Hey there, my goood friend, what are you doing there?", AnyMetric(lambda src, tgt:[len(s+t) for s,t in zip(src, tgt)])))

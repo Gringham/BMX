@@ -20,5 +20,17 @@ def power_mean(vals, p):
     return (np.mean(vals_np**p)**(1 / p)).real
 
 if __name__ == '__main__':
+    print(power_mean([0.1, 0.3, 0.2, 0.15, 0.2, 0.1], 1))
+    print(sum([0.1, 0.3, 0.2, 0.15, 0.2, 0.1])/6)
 
-    print(power_mean([0.1, 0.3, 0.2, -0.2, 0.15, 0.2, 0.1, -0.1], 1))
+    print(power_mean([0.1, 0.3, 0.2, 0.15, 0.2, 0.1], 300))
+    print(max([0.1, 0.3, 0.2, 0.15, 0.2, 0.1]))
+
+    print(power_mean([0.1, 0.3, 0.2, 0.15, 0.2, 0.1], -300))
+    print(min([0.1, 0.3, 0.2, 0.15, 0.2, 0.1]))
+
+    print(power_mean([0.1, 0.3, 0.2, 0.15, 0.2, 0.1], 2))
+    print(np.sqrt(sum([i ** 2 for i in [0.1, 0.3, 0.2, 0.15, 0.2, 0.1]]) / 6))
+
+    print(power_mean([0.1, 0.3, 0.2, 0.15, 0.2, 0.1], -1))
+    print(6 / sum([1/i for i in [0.1, 0.3, 0.2, 0.15, 0.2, 0.1]]))

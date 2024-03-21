@@ -16,7 +16,7 @@ class RandomScore(MetricClass):
 
     def __init__(self, mode=REFERENCE_BASED, hyp_lang = 'en', easyNMTModel = 'm2m_100_1.2B', bs = 8, lp = None):
         self.version = "0"
-        self.mode=REFERENCE_FREE
+        self.mode=mode
 
     def __call__(self, gt, hyp):
         return [random.uniform(0, 1) for g in gt]

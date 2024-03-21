@@ -17,6 +17,7 @@ class XMOVERScorer:
 
         self.tokenizer = BertTokenizer.from_pretrained(model_name, do_lower_case=do_lower_case)
         self.model = BertModel.from_pretrained(model_name, config=config)
+        print("model", model_name, self.model.num_parameters())
         self.model.to(device)
 
         self.lm = GPT2LMHeadModel.from_pretrained(lm_name)

@@ -21,6 +21,7 @@ class BertScore(MetricClass):
         self.scorer = scorer.BERTScorer(*args, lang=lang, batch_size=batch_size, **kwargs)
         self.version = version("bert-score")
 
+
     def __call__(self, gt, hyp):
         '''
         Implementation from here, installed via pip: https://github.com/Tiiiger/bert_score
@@ -35,4 +36,4 @@ class BertScore(MetricClass):
 
 if __name__ == '__main__':
     b = BertScore()
-    print(b(["A test sentence"], ["A simple sentence for test"]))
+    print(b([["A test sentence", "Second"],'"So Cummings was told that these units must be preserved in their entirety."'], ["Satz1", '„Also wurde Cummings gesagt, dass diese Einheiten in ihrer Gesamtheit erhalten werden müssen']))
