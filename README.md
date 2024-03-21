@@ -25,7 +25,7 @@ If you use it, please cite:
 To run the experiments, please follow the following steps:
 
 - Prepare the datasets, by downloading the respective data and running the preparation scripts in xaiMetrics/data
-- Create xaiMetrics/outputs/experiment_graphs, xaiMetrics/outputs/experiment_graphs_pdf, 
+- Create `xaiMetrics/outputs/experiment_graphs`, xaiMetrics/outputs/experiment_graphs_pdf, 
   xaiMetrics/outputs/experiment_graphs_pdf_stratification, xaiMetrics/outputs/experiment_results, 
   xaiMetrics/outputs/experiment_results_stratification, xaiMetrics/outputs/Images_Paper_Auto_Gen, 
   xaiMetrics/outputs/raw_explanations, xaiMetrics/outputs/sys_level_tables
