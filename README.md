@@ -1,4 +1,5 @@
-# BMX - Boosting Natural Language Generation Metrics with Explainability
+# BMX<br><sub><sup>Boosting Natural Language Generation Metrics with Explainability</sup></sub>
+[![arXiv](https://img.shields.io/badge/View%20on%20arXiv-B31B1B?logo=arxiv&labelColor=gray)]([https://arxiv.org/abs/2310.00367](https://arxiv.org/abs/2212.10469)
 
 This repository contains code for our paper - BMX: Boosting Natural Language Generation with Explainability.
 If you use it, please cite: 
